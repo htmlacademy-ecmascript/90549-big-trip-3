@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatTime, formatDate, formatDateValue, formatDuration } from '../util.js';
 
 function createTripTemplate(point, offers, destination) {
@@ -55,26 +55,25 @@ function createTripTemplate(point, offers, destination) {
   );
 }
 
-export default class TripView {
-  constructor({ point, offers, destination }) {
-    this.point = point;
-    this.offers = offers;
-    this.destination = destination;
+export default class TripView extends AbstractView {
+  #point = null;
+  #offers = null;
+  #destination = null;
+
+  constructor({ point, offers, destination, onRollupClick }) {
+    super();
+    this.#point = point;
+    this.#offers = offers;
+    this.#destination = destination;
+
+    this.rollupButton.addEventListener('click', onRollupClick);
   }
 
-  getTemplate() {
-    return createTripTemplate(this.point, this.offers, this.destination);
+  get template() {
+    return createTripTemplate(this.#point, this.#offers, this.#destination);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
+  get rollupButton() {
+    return this.element.querySelector('.event__rollup-btn');
   }
 }
